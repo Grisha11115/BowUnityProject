@@ -4,46 +4,58 @@ using UnityEngine;
 
 public class BowScript : MonoBehaviour
 {
-    public Vector3 threadFarPos;
-    public Vector3 threadNearPos;
+    public float _tension = 0;
+    public GameObject Arrow;
 
-    public float _tension = 0f;
     public Transform _thread;
     private bool _pressed = false;
-    // Start is called before the first frame update
+    public Vector3 threadNearPos;
+    public Vector3 threadFarPos;
+
+    public AnimationCurve threadReturnAnimation;
+
     void Start()
     {
 
     }
 
-    // Update is called once per frame
+    void FixedUpdate()
+    {
+    }
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        shot();
+    }
+    void shot()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-           // _pressed = true;
-           // if (_pressed)
-           // {
-                if (_tension <= 1)
-                {
-                    _tension += Time.deltaTime * 5;
-                }
-                if (_tension > 1)
-                {
-                    _tension = 0f;
-                }
-                _thread.localPosition = Vector3.Lerp(threadNearPos, threadFarPos, _tension);
-
-
-           // }
+            _pressed = true;
         }
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetKeyUp(KeyCode.Q))
         {
-        //   _pressed = false;
-            _tension = 0f;
+            _pressed = false;
+            _tension = 0;
+            StartCoroutine(RopeReturn());
+        }
+        if (_pressed)
+        {
+            if (_tension < 1f)
+            {
+                _tension += Time.deltaTime;
+            }
+            _thread.localPosition = Vector3.Lerp(threadNearPos, threadFarPos, _tension);
+        }
+
+    }
+    IEnumerator RopeReturn()
+    {
+        Vector3 StartNewPos = _thread.localPosition;
+        for (float f = 0; f < 1f; f += Time.deltaTime)
+        {
+            _thread.localPosition = Vector3.LerpUnclamped(StartNewPos, threadNearPos, threadReturnAnimation.Evaluate(f));
+            Arrow.SetActive(false);
+            yield return null;
         }
     }
-
-
 }
-
