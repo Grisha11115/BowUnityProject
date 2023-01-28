@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class BowScript : MonoBehaviour
 {
+   
     public float _tension = 0;
     public GameObject Arrow;
     public float ArrowSpeed = 20f;
@@ -19,8 +19,10 @@ public class BowScript : MonoBehaviour
 
     public ArrowScript[] ArrowPool;
 
+
     void Start()
-    {
+    {    
+        
         CurrentArrow = Arrow.GetComponent<ArrowScript>();
     }
 
@@ -30,6 +32,14 @@ public class BowScript : MonoBehaviour
     }
     void shot()
     {
+        if (_pressed)
+        {
+            if (_tension < 1f)
+            {
+                _tension += Time.deltaTime;
+            }
+            _thread.localPosition = Vector3.Lerp(threadNearPos, threadFarPos, _tension);
+        }
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if(ArrowIndex >= ArrowPool.Length)
@@ -52,14 +62,6 @@ public class BowScript : MonoBehaviour
             _pressed = false;
             _tension = 0;
 
-        }
-        if (_pressed)
-        {
-            if (_tension < 1f)
-            {
-                _tension += Time.deltaTime;
-            }
-            _thread.localPosition = Vector3.Lerp(threadNearPos, threadFarPos, _tension);
         }
 
         IEnumerator RopeReturn()
