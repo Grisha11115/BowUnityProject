@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class BowScript : MonoBehaviour
 {
-   
+
     public float _tension = 0;
     public GameObject Arrow;
     public float ArrowSpeed = 20f;
@@ -15,19 +15,26 @@ public class BowScript : MonoBehaviour
     public Vector3 threadFarPos;
 
     public AnimationCurve threadReturnAnimation;
-    private ArrowScript CurrentArrow;
+    public ArrowScript CurrentArrow;
 
     public ArrowScript[] ArrowPool;
 
+    public Camera Cam;
+    private int MaxFieldOfView = 50;
+
 
     void Start()
-    {    
-        
+    {
         CurrentArrow = Arrow.GetComponent<ArrowScript>();
     }
 
+
     void Update()
     {
+        if (Cam.fieldOfView <= MaxFieldOfView)
+        {
+            Cam.fieldOfView = 50;
+        }
         shot();
     }
     void shot()
@@ -39,10 +46,12 @@ public class BowScript : MonoBehaviour
                 _tension += Time.deltaTime;
             }
             _thread.localPosition = Vector3.Lerp(threadNearPos, threadFarPos, _tension);
+            Cam.fieldOfView -= 10 * _tension;
+
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if(ArrowIndex >= ArrowPool.Length)
+            if (ArrowIndex >= ArrowPool.Length)
             {
                 ArrowIndex = 0;
             }
@@ -57,10 +66,11 @@ public class BowScript : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Q))
         {
+            Cam.fieldOfView += 10 * _tension;
             StartCoroutine(RopeReturn());
             CurrentArrow.Shot(ArrowSpeed * _tension);
             _pressed = false;
-            _tension = 0;
+            _tension = 0f;
 
         }
 

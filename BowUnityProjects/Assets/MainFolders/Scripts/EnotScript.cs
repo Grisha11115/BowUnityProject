@@ -10,15 +10,16 @@ public class EnotScript : MonoBehaviour
     private TargetScript Target;
     public GameObject TargetMother;
 
+
+    private Vector3 SpawnPos = new(0, 1.5f, 0);
+    private bool GoingToSpawn = false;
+    private bool GoingToTarg = false;
+    public int Timer;
+
     public float Speed = 0f;
-
-    public bool BringTarget = false;
-
-    private GameObject Targ;
 
     void Start()
     {
-        Targ = GameObject.FindGameObjectWithTag("Target");
         Rigid = GetComponent<Rigidbody>();
         Target = TargetMother.GetComponent<TargetScript>();
         Anim = GetComponent<Animator>();
@@ -26,49 +27,55 @@ public class EnotScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        Timer++;
+        if (Timer >= 10 && GoingToTarg)
+        {
+            GoTo(TargetMother.transform.position);
+        }
+        if(Timer >= 10 && GoingToSpawn)
+        {
+            GoTo(SpawnPos);
+        }
         if (Target.isHit)
         {
+            Timer = 0;
+            GoingToTarg = true;
             Target.isHit = false;
-            Vector3 Dist = Targ.transform.position - transform.position;
-            Rigid.velocity = Dist * Speed;
-            transform.LookAt(Targ.transform.position);
-
             if (Rigid.velocity.magnitude > 0)
             {
                 Anim.Play("Move");
             }
         }
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "Target")
         {
-            Rigid.velocity = new Vector3(0,0,0);
-            BringTarget = true;
+            GoingToTarg = false;
+            GoingToSpawn = true;
             Target.NewPosition();
-            int Sector = Random.Range(1, 5);
-            Vector3 SpawnPos = new(0, 1, 0);
+            int Sector = Random.Range(1, 3);
             switch (Sector)
             {
                 case 1:
-                    Vector3 SpawnPos1 = new(Random.Range(20, 30), 1, Random.Range(20, 30));
+                    Vector3 SpawnPos1 = new(Random.Range(25, 35), 1.5f, Random.Range(25, 35));
                     SpawnPos = SpawnPos1;
                     break;
                 case 2:
-                    Vector3 SpawnPos2 = new(Random.Range(-20, -30), 1, Random.Range(20, 30));
+                    Vector3 SpawnPos2 = new(Random.Range(-25, -35), 1.5f, Random.Range(25, 35));
                     SpawnPos = SpawnPos2;
                     break;
-                case 3:
-                    Vector3 SpawnPos3 = new(Random.Range(-20, -30), 1, Random.Range(-20, -30));
-                    SpawnPos = SpawnPos3;
-                    break;
-                case 4:
-                    Vector3 SpawnPos4 = new(Random.Range(20, 30), 1, Random.Range(-20, -30));
-                    SpawnPos = SpawnPos4;
-                    break;
             }
-            Rigid.velocity = SpawnPos;
         }
+        if (collision.gameObject.tag == "Arrow")
+        {
+            collision.gameObject.SetActive(true);
+        }
+    }
+    private void GoTo(Vector3 TargetPos)
+    {
+        Timer = 0;
+        Rigid.AddForce(TargetPos * Speed);
     }
 
 }

@@ -8,6 +8,8 @@ public class ArrowScript : MonoBehaviour
     public TrailRenderer TrailRenderer;
     public GameObject EmptyArrow;
 
+    public float VelocityMult;
+    public float AngularVelocityMult;
 
     private EnotScript Enot;
     public GameObject MotherEnot;
@@ -19,7 +21,9 @@ public class ArrowScript : MonoBehaviour
     }
     void FixedUpdate()
     {
-
+        Vector3 cross = Vector3.Cross(transform.up, Rigidbody.velocity.normalized);
+        Rigidbody.AddTorque(cross * Rigidbody.velocity.magnitude * VelocityMult);
+        Rigidbody.AddTorque((-Rigidbody.angularVelocity + Vector3.Project(Rigidbody.angularVelocity, transform.up)) * Rigidbody.velocity.magnitude * AngularVelocityMult);
     }
     public void SetToRope(Transform ropeTransform)
     {

@@ -6,7 +6,8 @@ public class CameraScript : MonoBehaviour
 {
     [SerializeField] private float _sensivity;
     [SerializeField] private Transform _player;
-
+    private float horizontal;
+    private float vertical;
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -19,11 +20,10 @@ public class CameraScript : MonoBehaviour
     }
     void UpdateRotation()
     {
-        float horizontal = -Input.GetAxis("Mouse Y") * _sensivity * Time.deltaTime;
-        float vertical = Input.GetAxis("Mouse X") * _sensivity * Time.deltaTime;
-
-        _player.Rotate(0, vertical, 0);
-        transform.Rotate(horizontal, 0, 0);
+        vertical = -Input.GetAxis("Mouse Y") * _sensivity * Time.deltaTime;
+        horizontal = Input.GetAxis("Mouse X") * _sensivity * Time.deltaTime;
+        _player.Rotate(0, horizontal, 0);
+        transform.Rotate(vertical, 0, 0);
     }
 }
-    
+
