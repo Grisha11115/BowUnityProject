@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnotScript : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class EnotScript : MonoBehaviour
     private TargetScript Target;
     public GameObject TargetMother;
 
+    public NavMeshAgent Agent;
 
     private Vector3 SpawnPos = new(0, 1.5f, 0);
     private bool GoingToSpawn = false;
@@ -28,29 +30,32 @@ public class EnotScript : MonoBehaviour
     void FixedUpdate()
     {
         Timer++;
-        if (Timer >= 10 && GoingToTarg)
+        if (GoingToTarg)
         {
-            GoTo(TargetMother.transform.position);
+            Agent.speed = 7f;
+            Agent.SetDestination(TargetMother.transform.position);
         }
-        if(Timer >= 10 && GoingToSpawn)
+        if(GoingToSpawn)
         {
-            GoTo(SpawnPos);
+            Agent.speed = 4f;
+            Agent.SetDestination(SpawnPos);
         }
         if (Target.isHit)
         {
-            Timer = 0;
+            GoingToSpawn = false;
             GoingToTarg = true;
             Target.isHit = false;
-            if (Rigid.velocity.magnitude > 0)
-            {
-                Anim.Play("Move");
-            }
+          //  if (Rigid.velocity.magnitude > 0)
+           // {
+           //     Anim.Play("Move");
+           // }
         }
     }
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "Target")
         {
+            Timer = 0;
             GoingToTarg = false;
             GoingToSpawn = true;
             Target.NewPosition();
@@ -67,15 +72,5 @@ public class EnotScript : MonoBehaviour
                     break;
             }
         }
-        if (collision.gameObject.tag == "Arrow")
-        {
-            collision.gameObject.SetActive(true);
-        }
     }
-    private void GoTo(Vector3 TargetPos)
-    {
-        Timer = 0;
-        Rigid.AddForce(TargetPos * Speed);
-    }
-
 }
