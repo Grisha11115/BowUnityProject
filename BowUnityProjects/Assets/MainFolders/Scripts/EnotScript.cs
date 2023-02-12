@@ -7,15 +7,18 @@ public class EnotScript : MonoBehaviour
 {
     public Animator Anim;
     public Rigidbody Rigid;
+    public NavMeshAgent Agent;
 
     private TargetScript Target;
     public GameObject TargetMother;
 
-    public NavMeshAgent Agent;
+    public Transform Player;
 
     private Vector3 SpawnPos = new(0, 1.5f, 0);
     private bool GoingToSpawn = false;
     private bool GoingToTarg = false;
+
+    private bool EnotTakeTarget = false;
     public int Timer;
 
     public float Speed = 0f;
@@ -30,25 +33,14 @@ public class EnotScript : MonoBehaviour
     void FixedUpdate()
     {
         Timer++;
-        if (GoingToTarg)
+        Move();
+        if (EnotTakeTarget)
         {
-            Agent.speed = 7f;
-            Agent.SetDestination(TargetMother.transform.position);
-        }
-        if(GoingToSpawn)
-        {
-            Agent.speed = 4f;
-            Agent.SetDestination(SpawnPos);
-        }
-        if (Target.isHit)
-        {
-            GoingToSpawn = false;
-            GoingToTarg = true;
-            Target.isHit = false;
-          //  if (Rigid.velocity.magnitude > 0)
-           // {
-           //     Anim.Play("Move");
-           // }
+            if (Timer >= 60)
+            {
+                GoingToSpawn = true;
+                EnotTakeTarget = false;
+            }
         }
     }
     private void OnTriggerEnter(Collider collision)
@@ -56,9 +48,9 @@ public class EnotScript : MonoBehaviour
         if (collision.gameObject.tag == "Target")
         {
             Timer = 0;
-            GoingToTarg = false;
-            GoingToSpawn = true;
             Target.NewPosition();
+            GoingToTarg = false;
+            EnotTakeTarget = true;
             int Sector = Random.Range(1, 3);
             switch (Sector)
             {
@@ -71,6 +63,31 @@ public class EnotScript : MonoBehaviour
                     SpawnPos = SpawnPos2;
                     break;
             }
+        }
+    }
+    private void Move()
+    {
+        if (GoingToTarg)
+        {
+            Rigid.transform.LookAt(TargetMother.transform.position);
+            Agent.speed = 7f;
+            Agent.SetDestination(TargetMother.transform.position);
+        }
+        if (GoingToSpawn)
+        {
+            Rigid.transform.LookAt(Player.transform.position);
+            Agent.speed = 4f;
+            Agent.SetDestination(SpawnPos);
+        }
+        if (Target.isHit)
+        {
+            GoingToSpawn = false;
+            GoingToTarg = true;
+            Target.isHit = false;
+        }
+        if (Agent.speed >= 0)
+        {
+            //    Anim.Play("Move");
         }
     }
 }

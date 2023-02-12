@@ -6,8 +6,7 @@ using System;
 public class TargetScript : MonoBehaviour
 {
 
-    [SerializeField] private Transform TargetObject;
-    [SerializeField] private GameObject EmptyArrow;
+    [SerializeField] private GameObject EmptyArrowTargTag;
 
     public bool isHit = false;
 
@@ -29,8 +28,7 @@ public class TargetScript : MonoBehaviour
         {
             isHit = true;
             Vector3 ArrowPos = collision.contacts[0].point;
-            EmptyArrow.gameObject.tag = "ArrowOnTarget";
-            Instantiate(EmptyArrow, ArrowPos, collision.transform.rotation);
+            Instantiate(EmptyArrowTargTag, ArrowPos, collision.transform.rotation);
             collision.gameObject.SetActive(false);
         }
     }
@@ -42,11 +40,11 @@ public class TargetScript : MonoBehaviour
         switch (Sector)
         {
             case 1:
-                Vector3 SpawnPos1 = new Vector3(UnityEngine.Random.Range(0, 14), 10, UnityEngine.Random.Range(7, 43));
+                Vector3 SpawnPos1 = new Vector3(UnityEngine.Random.Range(0, 14), 50, UnityEngine.Random.Range(7, 43));
                 SpawnPos = SpawnPos1;
                 break;
             case 2:
-                Vector3 SpawnPos2 = new Vector3(UnityEngine.Random.Range(-14, 0), 10, UnityEngine.Random.Range(7, 43));
+                Vector3 SpawnPos2 = new Vector3(UnityEngine.Random.Range(-14, 0), 50, UnityEngine.Random.Range(7, 43));
                 SpawnPos = SpawnPos2;
                 break;
         }

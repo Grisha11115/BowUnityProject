@@ -27,7 +27,6 @@ public class AirBallonScript : MonoBehaviour
         this.gameObject.transform.Translate(Vector3.up * Time.deltaTime);
         if (transform.position.y >= 20)
         {
-            Timer = 0;
             TimerIsOn = true;
             YouLostAirBallon_UI.gameObject.SetActive(true);
         }
@@ -35,6 +34,8 @@ public class AirBallonScript : MonoBehaviour
         {
             transform.position = new Vector3(25, -1.5f, Random.Range(15, 50));
             YouLostAirBallon_UI.gameObject.SetActive(false);
+            Timer = 0;
+            TimerIsOn = false;
         }
     }
     private void OnCollisionEnter(Collision collision)
