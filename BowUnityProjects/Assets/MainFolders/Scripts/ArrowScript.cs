@@ -14,6 +14,8 @@ public class ArrowScript : MonoBehaviour
     private EnotScript Enot;
     public GameObject MotherEnot;
 
+    public GameObject CameraObject;
+
     private void Start()
     {
         Enot = MotherEnot.GetComponent<EnotScript>();

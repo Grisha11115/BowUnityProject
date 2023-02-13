@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 public class BowScript : MonoBehaviour
 {
 
@@ -21,11 +22,15 @@ public class BowScript : MonoBehaviour
 
     public Camera Cam;
     private int MaxFieldOfView = 50;
+    private PostProcessVolume PostProcess;
+    private Vignette Vignette;
 
 
     void Start()
     {
+        PostProcess = Cam.GetComponent<PostProcessVolume>();
         CurrentArrow = Arrow.GetComponent<ArrowScript>();
+        PostProcess.profile.TryGetSettings (out Vignette);
     }
 
 
@@ -33,6 +38,7 @@ public class BowScript : MonoBehaviour
     {
         if (Cam.fieldOfView <= MaxFieldOfView)
         {
+            Vignette.intensity.value = 0;
             Cam.fieldOfView = 50;
         }
         shot();
@@ -47,7 +53,7 @@ public class BowScript : MonoBehaviour
             }
             _thread.localPosition = Vector3.Lerp(threadNearPos, threadFarPos, _tension);
             Cam.fieldOfView -= 10 * _tension;
-
+            Vignette.intensity.value += 0.5f * _tension;
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -67,6 +73,7 @@ public class BowScript : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Q))
         {
             Cam.fieldOfView += 10 * _tension;
+            Vignette.intensity.value -= 0.5f * _tension;
             StartCoroutine(RopeReturn());
             CurrentArrow.Shot(ArrowSpeed * _tension);
             _pressed = false;

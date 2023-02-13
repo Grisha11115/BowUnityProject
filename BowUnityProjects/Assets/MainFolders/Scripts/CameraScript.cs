@@ -6,8 +6,10 @@ public class CameraScript : MonoBehaviour
 {
     [SerializeField] private float _sensivity;
     [SerializeField] private Transform _player;
+
     private float horizontal;
     private float vertical;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
