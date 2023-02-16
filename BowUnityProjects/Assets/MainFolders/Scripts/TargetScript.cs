@@ -5,6 +5,8 @@ using System;
 
 public class TargetScript : MonoBehaviour
 {
+    public UIMeneger UIManager;
+    public GameObject TargetMotherUIManager;
 
     [SerializeField] private GameObject EmptyArrowTargTag;
 
@@ -15,6 +17,7 @@ public class TargetScript : MonoBehaviour
 
     private void Start()
     {
+        UIManager = TargetMotherUIManager.GetComponent<UIMeneger>();
     }
 
     private void Update()
@@ -54,6 +57,8 @@ public class TargetScript : MonoBehaviour
         {
             Destroy(element);
         }
+
     }
+
 
 }

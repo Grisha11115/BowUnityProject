@@ -367,6 +367,7 @@
 "Assets/MainFolders/Scripts/SecondAngryLogScript.cs"
 "Assets/MainFolders/Scripts/SystemScript.cs"
 "Assets/MainFolders/Scripts/TargetScript.cs"
+"Assets/MainFolders/Scripts/UIMeneger.cs"
 -langversion:9.0
 
 /deterministic

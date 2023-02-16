@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+
 public class EnotScript : MonoBehaviour
 {
     public Animator Anim;
@@ -12,6 +13,8 @@ public class EnotScript : MonoBehaviour
     private TargetScript Target;
     public GameObject TargetMother;
 
+    public UIMeneger UIManager;
+    public GameObject TargetMotherUIManager;
     public Transform Player;
 
     private Vector3 SpawnPos = new(0, 1.5f, 0);
@@ -23,8 +26,11 @@ public class EnotScript : MonoBehaviour
 
     public float Speed = 0f;
 
+    private float PosY;
+
     void Start()
     {
+        UIManager = TargetMotherUIManager.GetComponent<UIMeneger>();
         Rigid = GetComponent<Rigidbody>();
         Target = TargetMother.GetComponent<TargetScript>();
         Anim = GetComponent<Animator>();
@@ -42,27 +48,44 @@ public class EnotScript : MonoBehaviour
                 EnotTakeTarget = false;
             }
         }
+        Vector3 CurrentPosition = new(this.transform.position.x, PosY, this.transform.position.z);
+        if (SpawnPos == CurrentPosition && GoingToSpawn)
+        {
+            Agent.speed = 0f;
+        }
+        if (Agent.speed >= 0)
+        {
+            Anim.SetBool("Move", true);
+
+        }
+        if (Agent.speed <= 0)
+        {
+            Anim.SetBool("Move", false);
+        }
     }
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "Target")
         {
+            UIManager.ScoreOfTarget++;
             Timer = 0;
-            Target.NewPosition();
             GoingToTarg = false;
             EnotTakeTarget = true;
             int Sector = Random.Range(1, 3);
             switch (Sector)
             {
                 case 1:
-                    Vector3 SpawnPos1 = new(Random.Range(25, 35), 1.5f, Random.Range(25, 35));
+                    Vector3 SpawnPos1 = new(Random.Range(25, 35), PosY, Random.Range(25, 35));
                     SpawnPos = SpawnPos1;
                     break;
                 case 2:
-                    Vector3 SpawnPos2 = new(Random.Range(-25, -35), 1.5f, Random.Range(25, 35));
+                    Vector3 SpawnPos2 = new(Random.Range(-25, -35), PosY, Random.Range(25, 35));
                     SpawnPos = SpawnPos2;
                     break;
             }
+            Target.NewPosition();
+       
+
         }
     }
     private void Move()
@@ -75,7 +98,7 @@ public class EnotScript : MonoBehaviour
         }
         if (GoingToSpawn)
         {
-            Rigid.transform.LookAt(Player.transform.position);
+            Rigid.transform.LookAt(SpawnPos);
             Agent.speed = 4f;
             Agent.SetDestination(SpawnPos);
         }
@@ -85,9 +108,8 @@ public class EnotScript : MonoBehaviour
             GoingToTarg = true;
             Target.isHit = false;
         }
-        if (Agent.speed >= 0)
-        {
-            //    Anim.Play("Move");
-        }
     }
+
+
+    
 }

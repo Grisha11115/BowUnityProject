@@ -5,37 +5,36 @@ using UnityEngine.UI;
 
 public class AirBallonScript : MonoBehaviour
 {
-    public GameObject AirBallon_UI;
-    public Text ScoreOfAirBallon_UI;
-    public Text YouLostAirBallon_UI;
-
-    private int ScoreOfAirBallon = 0;
-
+    public UIMeneger AirBallon_UI;
+    public GameObject AirBallonMotherUIManager;
     private int Timer;
     private bool TimerIsOn;
 
+    Vector3 SpawnPos = new(0, 1.5f, 50);
 
 
+    private void Start()
+    {
+        AirBallon_UI = AirBallonMotherUIManager.GetComponent<UIMeneger>();
+    }
     private void FixedUpdate()
     {
-        if (TimerIsOn)
-            Timer++;
+
 
     }
     void Update()
     {
-        this.gameObject.transform.Translate(Vector3.up * Time.deltaTime);
-        if (transform.position.y >= 20)
+        if(transform.position.y >= 20)
         {
-            TimerIsOn = true;
-            YouLostAirBallon_UI.gameObject.SetActive(true);
+            transform.position = SpawnPos;
         }
-        if (Timer >= 180)
+        if(!AirBallon_UI.SecondStageFinished && AirBallon_UI.FirstStageFinished)
         {
-            transform.position = new Vector3(25, -1.5f, Random.Range(15, 50));
-            YouLostAirBallon_UI.gameObject.SetActive(false);
-            Timer = 0;
-            TimerIsOn = false;
+            this.gameObject.transform.Translate(Vector3.up * Time.deltaTime);
+        }
+        else
+        {
+            this.gameObject.SetActive(false);
         }
     }
     private void OnCollisionEnter(Collision collision)
@@ -43,18 +42,16 @@ public class AirBallonScript : MonoBehaviour
         if (collision.gameObject.tag == "Arrow")
         {
             collision.gameObject.SetActive(false);
-            ScoreOfAirBallon++;
-            ScoreOfAirBallon_UI.text = ScoreOfAirBallon.ToString();
-            Vector3 SpawnPos = new(0, 1.5f, 50);
+            AirBallon_UI.ScoreOfAirBallon++;
             int Sector = Random.Range(1, 3);
             switch (Sector)
             {
                 case 1:
-                    Vector3 SpawnPos1 = new(25, -1.5f, Random.Range(15, 50));
+                    Vector3 SpawnPos1 = new(10, -1.5f, Random.Range(15, 40));
                     SpawnPos = SpawnPos1;
                     break;
                 case 2:
-                    Vector3 SpawnPos2 = new(-25,-1.5f, Random.Range(15, 50));
+                    Vector3 SpawnPos2 = new(-10,-1.5f, Random.Range(15, 40));
                     SpawnPos = SpawnPos2;
                     break;
             }
