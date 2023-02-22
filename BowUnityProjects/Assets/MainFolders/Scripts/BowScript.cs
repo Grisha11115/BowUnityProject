@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 public class BowScript : MonoBehaviour
 {
-
+    public Transform CameraTransform;
     public float _tension = 0;
     public GameObject Arrow;
     public float ArrowSpeed = 20f;
@@ -25,12 +25,11 @@ public class BowScript : MonoBehaviour
     private PostProcessVolume PostProcess;
     private Vignette Vignette;
 
-
     void Start()
     {
         PostProcess = Cam.GetComponent<PostProcessVolume>();
         CurrentArrow = Arrow.GetComponent<ArrowScript>();
-        PostProcess.profile.TryGetSettings (out Vignette);
+        PostProcess.profile.TryGetSettings(out Vignette);
     }
 
 
@@ -54,6 +53,7 @@ public class BowScript : MonoBehaviour
             _thread.localPosition = Vector3.Lerp(threadNearPos, threadFarPos, _tension);
             Cam.fieldOfView -= 10 * _tension;
             Vignette.intensity.value += 0.5f * _tension;
+
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -75,7 +75,7 @@ public class BowScript : MonoBehaviour
             Cam.fieldOfView += 10 * _tension;
             Vignette.intensity.value -= 0.5f * _tension;
             StartCoroutine(RopeReturn());
-            CurrentArrow.Shot(ArrowSpeed * _tension);
+            CurrentArrow.Shot(ArrowSpeed * _tension, CameraTransform);
             _pressed = false;
             _tension = 0f;
 

@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Target
   - ArrowOnTarget
+  - SecondAngryLog
   layers:
   - Default
   - TransparentFX

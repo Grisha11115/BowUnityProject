@@ -10,7 +10,7 @@ public class AirBallonScript : MonoBehaviour
     private int Timer;
     private bool TimerIsOn;
 
-    Vector3 SpawnPos = new(0, 1.5f, 50);
+    Vector3 SpawnPos = new(0, 1.5f, 20);
 
 
     private void Start()
@@ -26,9 +26,21 @@ public class AirBallonScript : MonoBehaviour
     {
         if(transform.position.y >= 20)
         {
+            int Sector = Random.Range(1, 3);
+            switch (Sector)
+            {
+                case 1:
+                    Vector3 SpawnPos1 = new(10, -1.5f, Random.Range(15, 40));
+                    SpawnPos = SpawnPos1;
+                    break;
+                case 2:
+                    Vector3 SpawnPos2 = new(-10, -1.5f, Random.Range(15, 40));
+                    SpawnPos = SpawnPos2;
+                    break;
+            }
             transform.position = SpawnPos;
         }
-        if(!AirBallon_UI.SecondStageFinished && AirBallon_UI.FirstStageFinished)
+        if(AirBallon_UI.NumOfStage == 2)
         {
             this.gameObject.transform.Translate(Vector3.up * Time.deltaTime);
         }

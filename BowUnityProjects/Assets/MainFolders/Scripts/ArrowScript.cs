@@ -38,8 +38,10 @@ public class ArrowScript : MonoBehaviour
 
     }
 
-    public void Shot(float velocity)
-    {
+    public void Shot(float velocity, Transform Player)
+    { 
+        transform.parent = Player.transform;
+        transform.localPosition = Vector3.zero;
         transform.parent = null;
         Rigidbody.isKinematic = false;
         Rigidbody.velocity = transform.up * velocity;
